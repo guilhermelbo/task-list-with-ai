@@ -22,24 +22,25 @@ public class TaskController {
     private final DeleteTaskUseCase deleteTaskUseCase;
     private final ListTasksUseCase listTasksUseCase;
     private final TaskMapper taskMapper;
+    private final TaskResourceAssembler taskResourceAssembler;
 
     @PostMapping
-    public ResponseEntity<TaskResponse> createTask(@Valid @RequestBody CreateTaskRequest request) {
+    public ResponseEntity<TaskResource> createTask(@Valid @RequestBody CreateTaskRequest request) {
         Task task = createTaskUseCase.execute(taskMapper.toCommand(request));
-        return ResponseEntity.status(HttpStatus.CREATED).body(taskMapper.toResponse(task));
+        return ResponseEntity.status(HttpStatus.CREATED).body(taskResourceAssembler.toModel(task));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<TaskResponse> updateTask(@PathVariable String id,
+    public ResponseEntity<TaskResource> updateTask(@PathVariable String id,
             @Valid @RequestBody UpdateTaskRequest request) {
         Task task = updateTaskUseCase.execute(taskMapper.toCommand(id, request));
-        return ResponseEntity.ok(taskMapper.toResponse(task));
+        return ResponseEntity.ok(taskResourceAssembler.toModel(task));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TaskResponse> getTask(@PathVariable String id) {
+    public ResponseEntity<TaskResource> getTask(@PathVariable String id) {
         Task task = getTaskUseCase.execute(id);
-        return ResponseEntity.ok(taskMapper.toResponse(task));
+        return ResponseEntity.ok(taskResourceAssembler.toModel(task));
     }
 
     @DeleteMapping("/{id}")
@@ -49,13 +50,13 @@ public class TaskController {
     }
 
     @GetMapping
-    public ResponseEntity<PageResult<TaskResponse>> listTasks(
+    public ResponseEntity<PageResult<TaskResource>> listTasks(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         PageResult<Task> taskPage = listTasksUseCase.execute(page, size);
-        List<TaskResponse> responses = taskPage.content().stream()
-                .map(taskMapper::toResponse)
+        List<TaskResource> resources = taskPage.content().stream()
+                .map(taskResourceAssembler::toModel)
                 .collect(Collectors.toList());
-        return ResponseEntity.ok(new PageResult<>(responses, taskPage.page(), taskPage.size()));
+        return ResponseEntity.ok(new PageResult<>(resources, taskPage.page(), taskPage.size()));
     }
 }
