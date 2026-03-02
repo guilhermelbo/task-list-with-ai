@@ -10,7 +10,8 @@ When implementing a new feature in the backend, follow these steps strictly to e
 - Discuss the specification with the user to ensure all edge cases and domain rules are captured.
 
 ## 2. Define the Domain Model (Core)
-- **Entities & Value Objects**: Implement core business objects in `backend/src/main/java/com/tasklist/api/domain/`. These classes must **NOT** have dependencies on external frameworks (e.g., no Spring or JPA annotations).
+- **Entities & Value Objects**: Implement core business objects in `backend/src/main/java/com/tasklist/api/domain/`. These classes must **NOT** have dependencies on external frameworks, except that **Domain entities CAN use Lombok**. 
+- **Invariants**: Domain entities must manage their own invariants (e.g. validate state in constructors and mutator methods to prevent invalid states).
 - **Domain Exceptions**: Create specific exception classes for business rule violations.
 - **Repository Interfaces**: Define the expected storage behavior via interfaces (Ports) in the domain or application layer.
 
