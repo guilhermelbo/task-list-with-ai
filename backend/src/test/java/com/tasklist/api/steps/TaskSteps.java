@@ -26,13 +26,13 @@ public class TaskSteps {
 
     @Given("I have a task with the title {string}")
     public void i_have_a_task_with_the_title(String title) {
-        this.currentTask = new Task("id-123", title);
+        this.currentTask = new Task("id-123", title, false);
     }
 
     @When("I create the task")
     public void i_create_the_task() {
         try {
-            this.currentTask = new Task("id-123", titleInput);
+            this.currentTask = new Task("id-123", titleInput, false);
         } catch (Exception e) {
             this.caughtException = e;
         }

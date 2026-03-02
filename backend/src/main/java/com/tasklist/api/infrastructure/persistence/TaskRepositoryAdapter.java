@@ -15,17 +15,18 @@ import org.springframework.stereotype.Service;
 public class TaskRepositoryAdapter implements TaskRepository {
 
     private final SpringDataTaskRepository springDataTaskRepository;
+    private final TaskPersistenceMapper taskPersistenceMapper;
 
     @Override
     public Task save(Task task) {
-        TaskJpaEntity jpaEntity = new TaskJpaEntity(task.getId(), task.getTitle(), task.isCompleted());
+        TaskJpaEntity jpaEntity = taskPersistenceMapper.toJpaEntity(task);
         TaskJpaEntity saved = springDataTaskRepository.save(jpaEntity);
-        return mapToDomain(saved);
+        return taskPersistenceMapper.toDomain(saved);
     }
 
     @Override
     public Optional<Task> findById(String id) {
-        return springDataTaskRepository.findById(id).map(this::mapToDomain);
+        return springDataTaskRepository.findById(id).map(taskPersistenceMapper::toDomain);
     }
 
     @Override
@@ -37,15 +38,7 @@ public class TaskRepositoryAdapter implements TaskRepository {
     public List<Task> findAll(int page, int size) {
         Page<TaskJpaEntity> pagedResult = springDataTaskRepository.findAll(PageRequest.of(page, size));
         return pagedResult.getContent().stream()
-                .map(this::mapToDomain)
+                .map(taskPersistenceMapper::toDomain)
                 .collect(Collectors.toList());
-    }
-
-    private Task mapToDomain(TaskJpaEntity jpaEntity) {
-        Task task = new Task(jpaEntity.getId(), jpaEntity.getTitle());
-        if (jpaEntity.isCompleted()) {
-            task.complete();
-        }
-        return task;
     }
 }
