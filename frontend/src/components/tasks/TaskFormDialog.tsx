@@ -2,6 +2,15 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Priority, TaskResource } from "@/types";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { taskService } from "@/services/api";
@@ -26,6 +35,8 @@ interface TaskFormDialogProps {
 export default function TaskFormDialog({ existingTask, onTaskSaved, trigger }: TaskFormDialogProps) {
     const [open, setOpen] = useState(false);
     const [title, setTitle] = useState(existingTask?.title || "");
+    const [description, setDescription] = useState(existingTask?.description || "");
+    const [priority, setPriority] = useState<Priority>(existingTask?.priority || "MEDIUM");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
@@ -41,9 +52,14 @@ export default function TaskFormDialog({ existingTask, onTaskSaved, trigger }: T
 
         try {
             if (isEditing) {
-                await taskService.updateTask(existingTask.id, { title, completed: existingTask.completed });
+                await taskService.updateTask(existingTask.id, {
+                    title,
+                    description,
+                    priority,
+                    completed: existingTask.completed
+                });
             } else {
-                await taskService.createTask({ title });
+                await taskService.createTask({ title, description, priority });
             }
             setOpen(false);
             setTitle("");
@@ -63,6 +79,8 @@ export default function TaskFormDialog({ existingTask, onTaskSaved, trigger }: T
         setOpen(newOpen);
         if (newOpen) {
             setTitle(existingTask?.title || "");
+            setDescription(existingTask?.description || "");
+            setPriority(existingTask?.priority || "MEDIUM");
             setError(null);
             setValidationErrors({});
         }
@@ -89,20 +107,50 @@ export default function TaskFormDialog({ existingTask, onTaskSaved, trigger }: T
 
                     <div className="grid gap-4 py-6">
                         <div className="flex flex-col gap-2">
-                            <Label htmlFor="title" className="text-left">
-                                Title
-                            </Label>
+                            <Label htmlFor="title">Title</Label>
                             <Input
                                 id="title"
                                 value={title}
                                 onChange={(e) => setTitle(e.target.value)}
                                 placeholder="Buy groceries..."
-                                className={`col-span-3 ${validationErrors.title ? 'border-red-500 focus-visible:ring-red-500' : ''}`}
+                                className={validationErrors.title ? 'border-red-500 focus-visible:ring-red-500' : ''}
                             />
                             {validationErrors.title && (
                                 <span className="text-sm text-red-500">{validationErrors.title}</span>
                             )}
                         </div>
+
+                        <div className="flex flex-col gap-2">
+                            <Label htmlFor="description">Description (optional)</Label>
+                            <Textarea
+                                id="description"
+                                value={description}
+                                onChange={(e) => setDescription(e.target.value)}
+                                placeholder="Enter task description..."
+                                className={validationErrors.description ? 'border-red-500 focus-visible:ring-red-500' : ''}
+                            />
+                            {validationErrors.description && (
+                                <span className="text-sm text-red-500">{validationErrors.description}</span>
+                            )}
+                        </div>
+
+                        <div className="flex flex-col gap-2">
+                            <Label htmlFor="priority">Priority</Label>
+                            <Select value={priority} onValueChange={(value: Priority) => setPriority(value)}>
+                                <SelectTrigger id="priority">
+                                    <SelectValue placeholder="Select priority" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="LOW">Low</SelectItem>
+                                    <SelectItem value="MEDIUM">Medium</SelectItem>
+                                    <SelectItem value="HIGH">High</SelectItem>
+                                </SelectContent>
+                            </Select>
+                            {validationErrors.priority && (
+                                <span className="text-sm text-red-500">{validationErrors.priority}</span>
+                            )}
+                        </div>
+
                         {error && (
                             <div className="text-sm text-red-500 p-3 bg-red-50 dark:bg-red-950/50 rounded-md">
                                 {error}
@@ -115,7 +163,7 @@ export default function TaskFormDialog({ existingTask, onTaskSaved, trigger }: T
                             Cancel
                         </Button>
                         <Button type="submit" disabled={loading || !title.trim()}>
-                            {loading ? "Saving..." : "Save changes"}
+                            {loading ? "Saving..." : (isEditing ? "Update Task" : "Create Task")}
                         </Button>
                     </DialogFooter>
                 </form>
