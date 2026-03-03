@@ -1,5 +1,6 @@
 package com.tasklist.api.infrastructure.persistence;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -19,6 +20,9 @@ public class TaskJpaEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
+    @Column(nullable = false, length = 255)
     private String title;
+
+    @Column(nullable = false)
     private boolean completed;
 }
