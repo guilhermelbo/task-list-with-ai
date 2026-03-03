@@ -17,7 +17,15 @@
       "Bash(mvn test:*)",
       "Bash(./mvnw clean:*)",
       "Bash(./mvnw spring-boot:run:*)",
-      "mcp__plugin_serena_serena__replace_content"
+      "mcp__plugin_serena_serena__replace_content",
+      "Bash(npm install:*)",
+      "Bash(npm run:*)",
+      "Bash(npm pkg:*)",
+      "Bash(npm test:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npx next:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
     ]
   }
 }

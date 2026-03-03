@@ -1,4 +1,6 @@
 package com.tasklist.api.application.port.in;
 
-public record UpdateTaskCommand(String id, String title, boolean completed) {
+import com.tasklist.api.domain.TaskPriority;
+
+public record UpdateTaskCommand(String id, String title, boolean completed, String description, TaskPriority priority) {
 }
