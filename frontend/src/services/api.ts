@@ -1,71 +1,23 @@
-import {
-    TaskResource,
-    CreateTaskRequest,
-    UpdateTaskRequest,
-    PageResult,
-    ErrorResponse
-} from '@/types';
+'use client';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api/v1';
+import { Task } from '@/types';
 
-class ApiError extends Error {
-    public readonly response: ErrorResponse;
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api/v1';
 
-    constructor(response: ErrorResponse) {
-        super(response.message || 'An API error occurred');
-        this.name = 'ApiError';
-        this.response = response;
-    }
+export async function getTasks(): Promise<Task[]> {
+    const res = await fetch(`${API_URL}/tasks`);
+    if (!res.ok) throw new Error('Failed to fetch tasks');
+    const data = await res.json();
+    // Handle HATEOAS response
+    return data._embedded?.tasks || data || [];
 }
 
-async function fetchWithConfig<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
-    const url = `${API_BASE_URL}${endpoint}`;
-
-    const headers = {
-        'Content-Type': 'application/json',
-        ...options.headers,
-    };
-
-    const response = await fetch(url, {
-        ...options,
-        headers,
+export async function createTask(taskData: Omit<Task, 'id'>): Promise<Task> {
+    const res = await fetch(`${API_URL}/tasks`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(taskData),
     });
-
-    if (response.status === 204) {
-        return undefined as T;
-    }
-
-    const data = await response.json().catch(() => null);
-
-    if (!response.ok) {
-        if (data && data.status) {
-            throw new ApiError(data as ErrorResponse);
-        }
-        throw new Error(response.statusText);
-    }
-
-    return data as T;
+    if (!res.ok) throw new Error('Failed to create task');
+    return res.json();
 }
-
-export const taskService = {
-    listTasks: (page = 0, size = 10) =>
-        fetchWithConfig<PageResult<TaskResource>>(`/tasks?page=${page}&size=${size}`, { method: 'GET' }),
-
-    getTask: (id: string) =>
-        fetchWithConfig<TaskResource>(`/tasks/${id}`, { method: 'GET' }),
-
-    createTask: (data: CreateTaskRequest) =>
-        fetchWithConfig<TaskResource>('/tasks', {
-            method: 'POST',
-            body: JSON.stringify(data)
-        }),
-
-    updateTask: (id: string, data: UpdateTaskRequest) =>
-        fetchWithConfig<TaskResource>(`/tasks/${id}`, {
-            method: 'PUT',
-            body: JSON.stringify(data)
-        }),
-
-    deleteTask: (id: string) =>
-        fetchWithConfig<void>(`/tasks/${id}`, { method: 'DELETE' }),
-};

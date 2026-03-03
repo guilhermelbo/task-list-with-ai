@@ -1,76 +1,27 @@
-import { Priority, TaskResource } from "@/types";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Trash2, Edit2 } from "lucide-react";
-import TaskFormDialog from "./TaskFormDialog";
+'use client';
 
-const getPriorityVariant = (priority: Priority): "outline" | "secondary" | "destructive" => {
-  switch (priority) {
-    case "LOW":
-      return "outline";
-    case "MEDIUM":
-      return "secondary";
-    case "HIGH":
-      return "destructive";
-    default:
-      return "default";
-  }
-};
+import { PriorityBadge } from '../ui/badge';
+import { Task } from '@/types';
+import { cn } from '@/lib/utils';
 
-interface TaskItemProps {
-    task: TaskResource;
-    onDelete: () => void;
-    onToggleComplete: () => void;
-    onTaskUpdated: () => void;
+interface Props {
+  task: Task;
+  className?: string;
 }
 
-export default function TaskItem({ task, onDelete, onToggleComplete, onTaskUpdated }: TaskItemProps) {
-    // Dumb UI: Rely purely on HATEOAS links and UI meta from the backend
-    const canDelete = !!task._links?.delete;
-    const canEditTitle = task._ui_meta?.canEditTitle ?? true;
-    const canUpdateState = !!task._links?.update;
-
-    return (
-        <div className={`flex items-center justify-between p-4 rounded-lg border ${task.completed ? 'bg-zinc-50/50 dark:bg-zinc-900/20' : 'bg-white dark:bg-zinc-950'} transition-colors group`}>
-            <div className="flex items-center space-x-4 overflow-hidden">
-                <Checkbox
-                    checked={task.completed}
-                    onCheckedChange={onToggleComplete}
-                    disabled={!canUpdateState}
-                    className="h-5 w-5"
-                />
-                <span className={`text-base truncate transition-all ${task.completed ? 'line-through text-zinc-400 dark:text-zinc-600' : 'text-zinc-900 dark:text-zinc-100'}`}>
-                    {task.title}
-                </span>
-            </div>
-
-            <div className="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                {canEditTitle && (
-                    <TaskFormDialog
-                        existingTask={task}
-                        onTaskSaved={onTaskUpdated}
-                        trigger={
-                            <Button variant="ghost" size="icon" className="h-8 w-8 text-zinc-500 hover:text-blue-500">
-                                <Edit2 className="h-4 w-4" />
-                                <span className="sr-only">Edit</span>
-                            </Button>
-                        }
-                    />
-                )}
-
-                {canDelete && (
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={onDelete}
-                        className="h-8 w-8 text-zinc-500 hover:text-red-500"
-                    >
-                        <Trash2 className="h-4 w-4" />
-                        <span className="sr-only">Delete</span>
-                    </Button>
-                )}
-            </div>
-        </div>
-    );
+export function TaskItem({ task, className }: Props) {
+  return (
+    <article className={cn(
+      'flex flex-col sm:flex-row sm:items-center justify-between p-6 border border-gray-200 rounded-xl shadow-sm hover:shadow-md hover:border-gray-300 transition-all duration-200',
+      className
+    )}>
+      <div className="flex-1 min-w-0 mb-4 sm:mb-0 sm:mr-4">
+        <h3 className="text-xl font-semibold text-gray-900 mb-2 truncate">{task.title}</h3>
+        {task.description && (
+          <p className="text-base text-gray-600 leading-relaxed line-clamp-3">{task.description}</p>
+        )}
+      </div>
+      <PriorityBadge priority={task.priority} />
+    </article>
+  );
 }
