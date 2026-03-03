@@ -1,8 +1,22 @@
-import { TaskResource } from "@/types";
+import { Priority, TaskResource } from "@/types";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Trash2, Edit2 } from "lucide-react";
 import TaskFormDialog from "./TaskFormDialog";
+
+const getPriorityVariant = (priority: Priority): "outline" | "secondary" | "destructive" => {
+  switch (priority) {
+    case "LOW":
+      return "outline";
+    case "MEDIUM":
+      return "secondary";
+    case "HIGH":
+      return "destructive";
+    default:
+      return "default";
+  }
+};
 
 interface TaskItemProps {
     task: TaskResource;
