@@ -4,7 +4,10 @@
       "mcp__plugin_serena_serena__get_symbols_overview",
       "mcp__plugin_serena_serena__list_dir",
       "Bash(./mvnw compile:*)",
-      "Bash(./mvnw test:*)"
+      "Bash(./mvnw test:*)",
+      "Bash(xargs cat:*)",
+      "Bash(./mvnw generate-sources:*)",
+      "Bash(./mvnw dependency:tree:*)"
     ]
   }
 }
