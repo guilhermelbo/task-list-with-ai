@@ -1,8 +1,19 @@
 "use client";
 
+import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
+import { useCallback } from "react";
+
 import { useState, useEffect } from "react";
 import { taskService } from "@/services/api";
-import { TaskResource } from "@/types";
+import { PageResult, TaskResource } from "@/types";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import TaskItem from "./TaskItem";
@@ -16,8 +27,9 @@ export default function TaskList() {
     const fetchTasks = async () => {
         try {
             setLoading(true);
-            const data = await taskService.listTasks();
-            setTasks(data.content);
+            const data = await taskService.listTasks(page, pageSize);
+            setPageData(data);
+            setCurrentPage(page);
             setError(null);
         } catch (err: any) {
             setError(err.message || "Failed to load tasks");
@@ -31,10 +43,14 @@ export default function TaskList() {
     }, []);
 
     const handleDelete = async (id: string, deleteLink?: string) => {
-        if (!deleteLink) return;
         try {
             await taskService.deleteTask(id);
-            fetchTasks();
+            if (pageData?.content.length === 1 &amp;&amp; currentPage &gt; 0) {
+                setCurrentPage(currentPage - 1);
+                fetchTasks(currentPage - 1);
+            } else {
+                refresh();
+            }
         } catch (err: any) {
             alert(err.message || "Failed to delete task");
         }
@@ -44,10 +60,9 @@ export default function TaskList() {
         if (!task._links?.update) return;
         try {
             await taskService.updateTask(task.id, {
-                title: task.title,
                 completed: !task.completed,
             });
-            fetchTasks();
+            refresh();
         } catch (err: any) {
             alert(err.message || "Failed to update task");
         }
