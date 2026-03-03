@@ -25,7 +25,9 @@
       "Bash(npx tsc:*)",
       "Bash(npx next:*)",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(npx shadcn@latest:*)",
+      "Bash(git checkout:*)"
     ]
   }
 }
