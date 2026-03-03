@@ -6,6 +6,8 @@ export interface TaskResource {
   completed: boolean;
   description: string;
   priority: Priority;
+  createdAt: string;
+  updatedAt: string;
   _ui_meta?: {
     canEditTitle: boolean;
     canDelete: boolean;
@@ -30,6 +32,8 @@ export interface PageResult<T> {
   content: T[];
   page: number;
   size: number;
+  totalElements: number;
+  totalPages: number;
 }
 
 export interface ErrorResponse {
