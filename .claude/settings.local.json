@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__plugin_serena_serena__get_symbols_overview",
+      "mcp__plugin_serena_serena__list_dir",
+      "Bash(./mvnw compile:*)",
+      "Bash(./mvnw test:*)",
+      "Bash(xargs cat:*)",
+      "Bash(./mvnw generate-sources:*)",
+      "Bash(./mvnw dependency:tree:*)",
+      "mcp__claude_ai_Excalidraw__read_me",
+      "mcp__claude_ai_Excalidraw__create_view",
+      "mcp__claude_ai_Excalidraw__read_checkpoint",
+      "mcp__claude_ai_Excalidraw__export_to_excalidraw",
+      "Bash(mvn compile:*)",
+      "Bash(mvn clean:*)",
+      "Bash(mvn test:*)",
+      "Bash(./mvnw clean:*)",
+      "Bash(./mvnw spring-boot:run:*)",
+      "mcp__plugin_serena_serena__replace_content"
+    ]
+  }
+}
