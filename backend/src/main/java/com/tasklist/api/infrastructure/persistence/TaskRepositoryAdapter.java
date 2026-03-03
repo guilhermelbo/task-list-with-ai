@@ -2,12 +2,10 @@ package com.tasklist.api.infrastructure.persistence;
 
 import com.tasklist.api.domain.Task;
 import com.tasklist.api.domain.repository.TaskRepository;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -30,15 +28,13 @@ public class TaskRepositoryAdapter implements TaskRepository {
     }
 
     @Override
+
     public void deleteById(String id) {
         springDataTaskRepository.deleteById(id);
     }
 
     @Override
-    public List<Task> findAll(int page, int size) {
-        Page<TaskJpaEntity> pagedResult = springDataTaskRepository.findAll(PageRequest.of(page, size));
-        return pagedResult.getContent().stream()
-                .map(taskPersistenceMapper::toDomain)
-                .collect(Collectors.toList());
+    public Page<Task> findAll(Pageable pageable) {
+        return springDataTaskRepository.findAll(pageable).map(taskPersistenceMapper::toDomain);
     }
 }
