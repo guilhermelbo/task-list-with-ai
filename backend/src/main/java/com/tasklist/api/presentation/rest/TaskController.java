@@ -1,12 +1,12 @@
 package com.tasklist.api.presentation.rest;
 
-import com.tasklist.api.application.port.in.PageResult;
 import com.tasklist.api.application.usecase.*;
 import com.tasklist.api.domain.Task;
 import jakarta.validation.Valid;
-import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -50,13 +50,7 @@ public class TaskController {
     }
 
     @GetMapping
-    public ResponseEntity<PageResult<TaskResource>> listTasks(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
-        PageResult<Task> taskPage = listTasksUseCase.execute(page, size);
-        List<TaskResource> resources = taskPage.content().stream()
-                .map(taskResourceAssembler::toModel)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(new PageResult<>(resources, taskPage.page(), taskPage.size()));
+    public ResponseEntity<Page<TaskResource>> listTasks(@PageableDefault(size = 10) Pageable pageable) {
+        return ResponseEntity.ok(listTasksUseCase.execute(pageable).map(taskResourceAssembler::toModel));
     }
 }
