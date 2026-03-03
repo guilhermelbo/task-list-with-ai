@@ -1,12 +1,13 @@
 package com.tasklist.api.steps;
 
 import com.tasklist.api.domain.Task;
+import com.tasklist.api.domain.TaskPriority;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.junit.jupiter.api.Assertions;
 
-public class TaskSteps {
+public class DomainTaskSteps {
 
     private String titleInput;
     private Task currentTask;
@@ -26,13 +27,14 @@ public class TaskSteps {
 
     @Given("I have a task with the title {string}")
     public void i_have_a_task_with_the_title(String title) {
-        this.currentTask = new Task("id-123", title, false);
+        this.currentTask = new Task(title);
+        this.currentTask = new Task("id-123", title, false, null, TaskPriority.MEDIUM, null, null);
     }
 
     @When("I create the task")
     public void i_create_the_task() {
         try {
-            this.currentTask = new Task("id-123", titleInput, false);
+            this.currentTask = new Task("id-123", titleInput, false, null, TaskPriority.MEDIUM);
         } catch (Exception e) {
             this.caughtException = e;
         }

@@ -1,4 +1,6 @@
 package com.tasklist.api.application.port.in;
 
-public record CreateTaskCommand(String title) {
+import com.tasklist.api.domain.TaskPriority;
+
+public record CreateTaskCommand(String title, String description, TaskPriority priority) {
 }

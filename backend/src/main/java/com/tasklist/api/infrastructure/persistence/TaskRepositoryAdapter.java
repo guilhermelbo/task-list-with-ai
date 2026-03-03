@@ -28,6 +28,7 @@ public class TaskRepositoryAdapter implements TaskRepository {
     }
 
     @Override
+
     public void deleteById(String id) {
         springDataTaskRepository.deleteById(id);
     }

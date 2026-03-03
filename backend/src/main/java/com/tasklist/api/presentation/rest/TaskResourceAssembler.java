@@ -25,6 +25,10 @@ public class TaskResourceAssembler implements RepresentationModelAssembler<Task,
                 .id(entity.getId())
                 .title(entity.getTitle())
                 .completed(entity.isCompleted())
+                .description(entity.getDescription())
+                .priority(entity.getPriority())
+                .createdAt(entity.getCreatedAt())
+                .updatedAt(entity.getUpdatedAt())
                 .uiMeta(uiMeta)
                 .build();
 
