@@ -5,11 +5,9 @@ import { Badge } from "@/components/ui/badge";
 import { Trash2, Edit2 } from "lucide-react";
 import TaskFormDialog from "./TaskFormDialog";
 
-interface TaskItemProps {
-    task: TaskResource;
-    onDelete: () => void;
-    onToggleComplete: () => void;
-    onTaskUpdated: () => void;
+interface Props {
+    task: Task;
+    className?: string;
 }
 
 export default function TaskItem({ task, onDelete, onToggleComplete, onTaskUpdated }: TaskItemProps) {
@@ -50,7 +48,35 @@ export default function TaskItem({ task, onDelete, onToggleComplete, onTaskUpdat
                     </div>
                 </div>
 
-            <div className="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    {canEditTitle && (
+                        <TaskFormDialog
+                            existingTask={task}
+                            onTaskSaved={onTaskUpdated}
+                            trigger={
+                                <Button variant="ghost" size="icon" className="h-8 w-8 text-zinc-500 hover:text-blue-500">
+                                    <Edit2 className="h-4 w-4" />
+                                    <span className="sr-only">Edit</span>
+                                </Button>
+                            }
+                        />
+                    )}
+
+                    {canDelete && (
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={onDelete}
+                            className="h-8 w-8 text-zinc-500 hover:text-red-500 flex-shrink-0"
+                        >
+                            <Trash2 className="h-4 w-4" />
+                            <span className="sr-only">Delete</span>
+                        </Button>
+                    )}
+                </div>
+            </div>
+
+            <div className="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity ml-auto sm:ml-0">
                 {canEditTitle && (
                     <TaskFormDialog
                         existingTask={task}
@@ -63,7 +89,6 @@ export default function TaskItem({ task, onDelete, onToggleComplete, onTaskUpdat
                         }
                     />
                 )}
-
                 {canDelete && (
                     <Button
                         variant="ghost"
@@ -77,33 +102,6 @@ export default function TaskItem({ task, onDelete, onToggleComplete, onTaskUpdat
                 )}
             </div>
         </div>
-
-        <div className="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity ml-auto sm:ml-0">
-            {canEditTitle && (
-                <TaskFormDialog
-                    existingTask={task}
-                    onTaskSaved={onTaskUpdated}
-                    trigger={
-                        <Button variant="ghost" size="icon" className="h-8 w-8 text-zinc-500 hover:text-blue-500">
-                            <Edit2 className="h-4 w-4" />
-                            <span className="sr-only">Edit</span>
-                        </Button>
-                    }
-                />
-            )}
-            {canDelete && (
-                <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={onDelete}
-                    className="h-8 w-8 text-zinc-500 hover:text-red-500 flex-shrink-0"
-                >
-                    <Trash2 className="h-4 w-4" />
-                    <span className="sr-only">Delete</span>
-                </Button>
-            )}
-        </div>
-    </div>
-        </div>
+        </div >
     );
 }
