@@ -1,33 +1,42 @@
 package com.tasklist.api.domain;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.ToString;
+import java.time.LocalDateTime;
+
+import lombok.*;
 
 @Getter
+@Setter
 @ToString
 @EqualsAndHashCode(of = "id")
+@NoArgsConstructor
+@AllArgsConstructor
 public class Task {
     private String id;
     private String title;
     private boolean completed;
+    private String description;
+    private TaskPriority priority;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
     public Task(String title) {
         validateTitle(title);
         this.title = title;
         this.completed = false;
-    }
-
-    public Task(String id, String title, boolean completed) {
-        validateTitle(title);
-        this.id = id;
-        this.title = title;
-        this.completed = completed;
+        this.priority = TaskPriority.MEDIUM;
     }
 
     public void updateTitle(String newTitle) {
         validateTitle(newTitle);
         this.title = newTitle;
+    }
+
+    public void updateDescription(String newDescription) {
+        this.description = newDescription;
+    }
+
+    public void updatePriority(TaskPriority newPriority) {
+        this.priority = newPriority != null ? newPriority : TaskPriority.MEDIUM;
     }
 
     public void complete() {

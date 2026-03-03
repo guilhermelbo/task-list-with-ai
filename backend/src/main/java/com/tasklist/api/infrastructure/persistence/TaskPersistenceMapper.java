@@ -8,10 +8,5 @@ public interface TaskPersistenceMapper {
 
     TaskJpaEntity toJpaEntity(Task task);
 
-    default Task toDomain(TaskJpaEntity jpaEntity) {
-        if (jpaEntity == null) {
-            return null;
-        }
-        return new Task(jpaEntity.getId(), jpaEntity.getTitle(), jpaEntity.isCompleted());
-    }
+    Task toDomain(TaskJpaEntity entity);
 }
