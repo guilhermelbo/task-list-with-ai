@@ -1,7 +1,11 @@
+export type Priority = 'LOW' | 'MEDIUM' | 'HIGH';
+
 export interface TaskResource {
   id: string;
   title: string;
   completed: boolean;
+  description: string;
+  priority: Priority;
   _ui_meta?: {
     canEditTitle: boolean;
     canDelete: boolean;
@@ -11,11 +15,15 @@ export interface TaskResource {
 
 export interface CreateTaskRequest {
   title: string;
+  description: string;
+  priority: Priority;
 }
 
 export interface UpdateTaskRequest {
-  title: string;
-  completed: boolean;
+  title?: string;
+  description?: string;
+  priority?: Priority;
+  completed?: boolean;
 }
 
 export interface PageResult<T> {

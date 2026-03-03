@@ -34,7 +34,10 @@ public class DomainTaskSteps {
     @When("I create the task")
     public void i_create_the_task() {
         try {
-            this.currentTask = new Task("id-123", titleInput, false, null, TaskPriority.MEDIUM);
+            this.currentTask = new Task(titleInput);
+            this.currentTask.setId("id-123");
+            this.currentTask.setDescription(null);
+            this.currentTask.setPriority(TaskPriority.MEDIUM);
         } catch (Exception e) {
             this.caughtException = e;
         }
