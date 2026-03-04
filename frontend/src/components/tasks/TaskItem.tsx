@@ -14,10 +14,9 @@ interface TaskItemProps {
 }
 
 export default function TaskItem({ task, onDelete, onToggleComplete, onTaskUpdated, className }: TaskItemProps) {
-    // Dumb UI: Rely purely on HATEOAS links and UI meta from the backend
-    const canDelete = !!task._links?.delete;
+    const canDelete = task.links?.some(link => link.rel === 'delete') ?? false;
     const canEditTitle = task._ui_meta?.canEditTitle ?? true;
-    const canUpdateState = !!task._links?.update;
+    const canUpdateState = task.links?.some(link => link.rel === 'update') ?? false;
 
     return (
         <div className={`p-4 rounded-lg border flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 ${task.completed ? 'bg-zinc-50/50 dark:bg-zinc-900/20' : 'bg-white dark:bg-zinc-950'} transition-colors group hover:shadow-sm ${className || ''}`}>

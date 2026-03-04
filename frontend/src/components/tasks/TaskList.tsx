@@ -63,7 +63,7 @@ export default function TaskList() {
   };
 
   const handleToggleComplete = async (task: TaskResource) => {
-    if (!task._links?.update) return;
+    if (!task.links?.some(link => link.rel === 'update')) return;
     try {
       await taskService.updateTask(task.id, {
         completed: !task.completed,
@@ -98,7 +98,7 @@ export default function TaskList() {
               <TaskItem
                 key={task.id}
                 task={task}
-                onDelete={() => handleDelete(task.id, task._links?.delete?.href)}
+                onDelete={() => handleDelete(task.id, task.links?.find(l => l.rel === 'delete')?.href)}
                 onToggleComplete={() => handleToggleComplete(task)}
                 onTaskUpdated={fetchTasks}
               />

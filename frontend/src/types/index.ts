@@ -12,7 +12,7 @@ export interface TaskResource {
     canEditTitle: boolean;
     canDelete: boolean;
   };
-  _links?: Record<string, { href: string }>;
+  links?: { rel: string; href: string }[];
 }
 
 export interface CreateTaskRequest {
