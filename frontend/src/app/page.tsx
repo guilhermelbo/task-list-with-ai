@@ -1,8 +1,6 @@
 import TaskList from "@/components/tasks/TaskList";
 
-import TaskList from '@/components/tasks/TaskList';
-
-export default TaskList;
+export default function Home() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-zinc-950 p-4 sm:p-8">
       <main className="w-full max-w-4xl mx-auto flex flex-col gap-8">

@@ -20,11 +20,16 @@ import TaskItem from "./TaskItem";
 import TaskFormDialog from "./TaskFormDialog";
 
 export default function TaskList() {
-  const [tasks, setTasks] = useState<TaskResource[]>([]);
+  const [pageData, setPageData] = useState<PageResult<TaskResource> | null>(null);
+  const [currentPage, setCurrentPage] = useState(0);
+  const pageSize = 10;
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchTasks = async () => {
+  const tasks = pageData?.content || [];
+
+  const fetchTasks = useCallback(async (page = 0) => {
     try {
       setLoading(true);
       const data = await taskService.listTasks(page, pageSize);
@@ -36,17 +41,18 @@ export default function TaskList() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  const refresh = useCallback(() => fetchTasks(currentPage), [fetchTasks, currentPage]);
 
   useEffect(() => {
-    fetchTasks();
-  }, []);
+    fetchTasks(0);
+  }, [fetchTasks]);
 
   const handleDelete = async (id: string, deleteLink?: string) => {
     try {
       await taskService.deleteTask(id);
-      if (pageData?.content.length === 1 & amp;& amp; currentPage & gt; 0) {
-        setCurrentPage(currentPage - 1);
+      if (pageData?.content.length === 1 && currentPage > 0) {
         fetchTasks(currentPage - 1);
       } else {
         refresh();
