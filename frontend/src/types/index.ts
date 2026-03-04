@@ -44,3 +44,13 @@ export interface ErrorResponse {
   path: string;
   validationErrors?: Record<string, string>;
 }
+
+export interface ChatRequest {
+  message: string;
+  sessionId?: string;
+}
+
+export interface ChatResponse {
+  response: string;
+  sessionId: string;
+}
